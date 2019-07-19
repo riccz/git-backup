@@ -1,0 +1,7 @@
+-e .[test]
+
+autopep8
+bumpversion
+rope
+Sphinx
+tox

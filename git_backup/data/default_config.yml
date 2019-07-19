@@ -1,0 +1,27 @@
+---
+clone_base_dir: '~/.cache/git-backup/local_clones'
+
+sources: []
+
+logging:
+  version: 1
+
+  root:
+    level: WARNING
+    handlers:
+      - stderr
+
+  loggers:
+    git_backup:
+      level: WARNING
+      propagate: true
+
+  handlers:
+    stderr:
+      class: logging.StreamHandler
+      formatter: stderr_formatter
+
+  formatters:
+    stderr_formatter:
+      format: '%(asctime)s %(name)-18s %(levelname)-8s: %(message)s'
+      datefmt: '%Y-%m-%d %H:%M:%S'

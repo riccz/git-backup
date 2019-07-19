@@ -1,0 +1,20 @@
+---
+image: python:latest
+
+variables:
+  PIP_CACHE_DIR: "${CI_PROJECT_DIR}/.cache/pip"
+
+cache:
+  paths:
+    - .cache/pip
+
+before_script:
+  - python -V
+  - pip install virtualenv
+  - virtualenv .venv/
+  - source .venv/bin/activate
+  - pip install tox
+
+test:py37:
+  image: python:3.7
+  script: tox -e py37
