@@ -5,6 +5,8 @@
 
 from setuptools import setup, find_packages
 
+# pylint: disable=invalid-name
+
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
