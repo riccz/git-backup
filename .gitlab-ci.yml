@@ -9,6 +9,8 @@ cache:
     - .cache/pip
 
 before_script:
+  - git config --global user.name "git-backup test"
+  - git config --global user.email "git-backup@test.invalid"
   - python -V
   - pip install virtualenv
   - virtualenv .venv/
