@@ -19,6 +19,8 @@ requirements = [
 setup_requirements = ['pytest-runner']
 
 test_requirements = [
+    'mypy',
+    'pylint',
     'pytest-cov',
     'pytest-mypy',
     'pytest-pylint',
