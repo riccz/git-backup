@@ -1,13 +1,69 @@
 """The setup script."""
 
 import sys
-from subprocess import run
 from typing import List, Tuple
 
 from setuptools import Command, find_packages, setup
 
-# pylint: disable=invalid-name
 
+class PylintCommand(Command):
+    '''Setup custom command that runs pylint.'''
+
+    description = 'Lint using pylint'
+
+    user_options: List[Tuple] = []
+
+    def initialize_options(self):
+        '''Must override but does nothing.'''
+
+    def finalize_options(self):
+        '''Must override but does nothing.'''
+
+    def run(self):
+        '''Run pylint and fail on E, F errors.'''
+
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+
+        from pylint.lint import Run
+
+        try:
+            Run(self.distribution.packages + ['setup.py'], do_exit=True)
+        except SystemExit as exc:
+            if exc.code & 0b100011 != 0:  # Mask out C, R, W errors
+                raise exc
+
+
+class MypyCommand(Command):
+    '''Setup custom command that runs mypy.'''
+
+    description = 'Statically typecheck using mypy'
+
+    user_options: List[Tuple] = []
+
+    def initialize_options(self):
+        '''Must override but does nothing.'''
+
+    def finalize_options(self):
+        '''Must override but does nothing.'''
+
+    def run(self):  # pylint: disable=no-self-use
+        '''Import and run mypy.'''
+
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+
+        from mypy.main import main  # pylint: disable=no-name-in-module
+
+        try:
+            main(None, sys.stdout, sys.stderr,
+                 self.distribution.packages + ['setup.py'])
+        except SystemExit as exc:
+            if exc.code != 0:
+                raise exc
+
+
+# pylint: disable=invalid-name
 with open('README.md') as readme_file:
     readme = readme_file.read()
 
@@ -32,48 +88,6 @@ extra_requirements = {
     'test': test_requirements,
 }
 
-packages = find_packages(include=['git_backup'])
-
-
-class PylintCommand(Command):
-    '''Setup custom command that runs pylint.'''
-
-    description = 'Run pylint.'
-
-    user_options: List[Tuple] = []
-
-    def initialize_options(self):
-        '''Must override but does nothing.'''
-
-    def finalize_options(self):
-        '''Must override but does nothing.'''
-
-    def run(self):  # pylint: disable=no-self-use
-        '''Run pylint and fail on E, F errors.'''
-        pylint_proc = run(['pylint'] + packages + ['setup.py'])
-        if pylint_proc.returncode & 0b100011 != 0:  # Mask out C, R, W errors
-            sys.exit(pylint_proc.returncode)
-
-
-class MypyCommand(Command):
-    '''Setup custom command that runs mypy.'''
-
-    description = 'Run mypy.'
-
-    user_options: List[Tuple] = []
-
-    def initialize_options(self):
-        '''Must override but does nothing.'''
-
-    def finalize_options(self):
-        '''Must override but does nothing.'''
-
-    def run(self):  # pylint: disable=no-self-use
-        '''Import and run mypy.'''
-        mypy_proc = run(['mypy'] + packages + ['setup.py'])
-        if mypy_proc.returncode != 0:
-            sys.exit(mypy_proc.returncode)
-
 
 setup(
     cmdclass={
@@ -93,7 +107,7 @@ setup(
     long_description=readme,
     include_package_data=True,
     name='git_backup',
-    packages=packages,
+    packages=find_packages(include=['git_backup']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

@@ -15,4 +15,4 @@ git-backup only fetches branches (`refs/heads/`) and tags (`refs/tags/`).
 - [ ] Package backups in bundles (no pygit, call git)
 - [ ] Add snippets
 - [ ] Add wikis
-- [x] Separate pylint and mypy from pytest. See <https://jichu4n.com/posts/how-to-add-custom-build-steps-and-commands-to-setuppy/>
+- [x] Separate pylint and mypy from pytest. See <https://jichu4n.com/posts/how-to-add-custom-build-steps-and-commands-to-setuppy/> <https://github.com/cmccully/astropy/blob/d67ca3681a5cef69feada74540db1a9c7b177b65/astropy/tests/command.py>
